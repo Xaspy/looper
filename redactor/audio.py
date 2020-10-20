@@ -1,5 +1,6 @@
 import os
 import wave
+import shutil
 import subprocess
 
 
@@ -9,6 +10,9 @@ PATH_TO_TEMP = os.path.join(MAIN_PATH, '_temp')
 
 class Audio:
     def __init__(self, path: str) -> None:
+        if os.path.isdir(path):
+            raise ValueError('Path to file specified incorrectly')
+
         self._send_audio_to_temp(path)
         self.audio = wave.open(self.file_path, 'r')
 
@@ -18,6 +22,14 @@ class Audio:
         self._length = self.audio.getnframes()
         self._rate = self.audio.getframerate()
         self._frames = self.audio.readframes(self._length)
+
+    def save(self, path: str) -> None:
+        if os.path.isdir(path):
+            raise ValueError('Path to new file specified incorrectly')
+        if os.path.exists(path):
+            raise ValueError('This file already exists')
+
+        shutil.copy(self.file_path, path)
 
     def cut(self, start_ms: int, end_ms: int) -> None:
         if start_ms > end_ms:
