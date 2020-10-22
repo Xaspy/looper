@@ -88,6 +88,12 @@ class Audio:
         self._rate = self.audio.getframerate()
         self._frames = self.audio.readframes(self._length)
 
+    def __del__(self):
+        self.audio.close()
+        os.remove(self.file_path)
+
 
 if __name__ == '__main__':
-    pass
+    a = Audio('C:\\Users\\20kol\\OneDrive\\Рабочий стол\\audioredactor\\t.mp3')
+    a.cut(0, 10000)
+    a.save('C:\\Users\\20kol\\OneDrive\\Рабочий стол\\audioredactor\\lol.mp3')
