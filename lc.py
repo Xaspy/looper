@@ -54,6 +54,9 @@ def main():
             elif request.startswith('-h'):
                 print(DESCRIPTION_RM)
             elif request.startswith('-s'):
+                if not _is_correct(2, request):
+                    print('err syntax')
+                    continue
                 speed_mult = request.split(maxsplit=1)[1]
                 try:
                     audio.change_speed(float(speed_mult))
@@ -62,10 +65,10 @@ def main():
                     print(e.args[0])
                     continue
             elif request.startswith('-c'):
-                split_req = request.split()
-                if len(split_req) != 3:
+                if not _is_correct(3, request):
                     print('err syntax')
                     continue
+                split_req = request.split()
                 try:
                     audio.cut(int(split_req[1]), int(split_req[2]))
                     print('file was cut')
@@ -73,6 +76,9 @@ def main():
                     print(e.args[0])
                     continue
             elif request.startswith('-f'):
+                if not _is_correct(2, request):
+                    print('err syntax')
+                    continue
                 path_to_save = request.split(maxsplit=1)[1]
                 try:
                     audio.save(path_to_save)
@@ -95,6 +101,10 @@ def main():
                     continue
             else:
                 print('err syntax')
+
+
+def _is_correct(number: int, req: str) -> bool:
+    return len(req.split()) == number
 
 
 if __name__ == '__main__':
