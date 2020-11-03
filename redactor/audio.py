@@ -3,15 +3,14 @@ import wave
 import shutil
 import subprocess
 
-
 MAIN_PATH = os.path.dirname(os.path.abspath(__file__))
 PATH_TO_TEMP = os.path.join(MAIN_PATH, '_temp')
 
 
 class Audio:
     def __init__(self, path: str) -> None:
-        if os.path.isdir(path):
-            raise ValueError('Path to file specified incorrectly')
+        if not os.path.exists(path) or os.path.isdir(path):
+            raise ValueError('path to file is incorrect')
 
         self._send_audio_to_temp(path)
         self.audio = wave.open(self.file_path, 'r')
@@ -25,9 +24,9 @@ class Audio:
 
     def save(self, path: str) -> None:
         if os.path.isdir(path):
-            raise ValueError('Path to new file specified incorrectly')
+            raise ValueError('path to new file specified incorrectly')
         if os.path.exists(path):
-            raise ValueError('This file already exists')
+            raise ValueError('this file already exists')
 
         shutil.copy(self.file_path, path)
 
@@ -50,12 +49,16 @@ class Audio:
 
         self._update_temp_file()
 
-    def merge(self, other) -> None:
+    def merge(self, other, is_to_beginning=False) -> None:
         if not isinstance(other, Audio):
             raise ValueError('argument should be Audio object')
 
-        self._length = self._length + other._length
-        self._frames = self._frames + other._frames
+        if is_to_beginning:
+            self._length = other._length + self._length
+            self._frames = other._frames + self._frames
+        else:
+            self._length = self._length + other._length
+            self._frames = self._frames + other._frames
 
         self._update_temp_file()
 
@@ -89,11 +92,12 @@ class Audio:
         self._frames = self.audio.readframes(self._length)
 
     def __del__(self):
-        self.audio.close()
-        os.remove(self.file_path)
+        try:
+            self.audio.close()
+            os.remove(self.file_path)
+        except AttributeError:
+            pass
 
 
 if __name__ == '__main__':
-    a = Audio('C:\\Users\\20kol\\OneDrive\\Рабочий стол\\audioredactor\\t.mp3')
-    a.cut(0, 10000)
-    a.save('C:\\Users\\20kol\\OneDrive\\Рабочий стол\\audioredactor\\lol.mp3')
+    pass
