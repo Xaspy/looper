@@ -64,6 +64,17 @@ def main():
                 except ValueError as e:
                     print(e.args[0])
                     continue
+            elif request.startswith('-v'):
+                if not _is_correct(2, request):
+                    print('err syntax')
+                    continue
+                volume_mult = request.split(maxsplit=1)[1]
+                try:
+                    audio.change_volume(float(volume_mult))
+                    print('file was volumed')
+                except ValueError as e:
+                    print(e.args[0])
+                    continue
             elif request.startswith('-c'):
                 if not _is_correct(3, request):
                     print('err syntax')
@@ -90,11 +101,9 @@ def main():
             elif request.startswith('-m'):
                 split_req = request.split(maxsplit=1)[1]
                 path_to_file = split_req.rsplit(maxsplit=1)[0]
-                mode = split_req.rsplit(maxsplit=1)[1]
                 try:
                     other_audio = Audio(path_to_file)
-                    bool_mode = mode != '0'
-                    audio.merge(other_audio, bool_mode)
+                    audio.merge(other_audio,)
                     print('merged successfully')
                 except Exception as e:
                     print(e.args[0])
