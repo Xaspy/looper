@@ -1,7 +1,6 @@
 import unittest
 from redactor.redacts import Track, Entity
 from unittest.mock import Mock
-from redactor.audio import Audio
 from redactor.exceptions.track_exc import OccupiedException
 
 
